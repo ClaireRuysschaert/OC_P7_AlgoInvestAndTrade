@@ -1,6 +1,26 @@
+from dataclasses import dataclass, field
+from itertools import combinations
 from typing import List, Tuple
 
-actions = [
+
+@dataclass
+class Action:
+    index: int
+    cost: int
+    value_percentage: int
+    expected_value_two_years: int = field(init=False)
+
+    def __post_init__(self):
+        self.expected_value_two_years = int(
+            self.cost + (self.cost * (self.value_percentage / 100))
+        )
+
+    def __str__(self):
+        return f"Action-{self.index}"
+
+max_budget = 500
+
+actions_data = [
     (20, 5),
     (30, 10),
     (50, 15),
@@ -22,57 +42,62 @@ actions = [
     (24, 21),
     (114, 18),
 ]
-max_budget = 500
 
 
-def brute_force(actions: List[Tuple[int, int]], max_budget: int) -> Tuple[int, int, List[int]]:
+def calculate_best_actions(
+    actions_data: List[Tuple[int, int]], max_budget: int
+) -> List[Tuple[Action]]:
     """
-    Maximise the value of the client's portfolio after two years with the given actions and maximum budget.
-    
-    This algorithm uses a brute-force approach to try all possible combinations of actions, ensuring that:
-    - Each action can be bought only once.
-    - The client doesn't exceed the maximum budget.
-    - The client can't buy a fraction of an action.
-    - The client can't sell an action.
+    Calculate the best combinations of actions to maximize returns
+    within a given budget.
 
     Args:
-        actions (List[Tuple[int, int]]): Each tuple contains (cost per action in euros, value per action after two years in percentage).
-        max_budget (int): Client's maximum budget in euros.
-    
+        actions_data (List[Tuple[int, int]]): List of tuples containing
+        action cost and value percentage.
+        max_budget (int): The maximum budget available.
+
     Returns:
-        Tuple[int, int, List[int]]: A tuple containing the following information:
-            - Invested amount in euros.
-            - Value of the portfolio after two years in euros.
-            - List of indices of the best actions to buy.
-     
+        List[Tuple[int, List[Action]]]: A list of tuples, each containing the
+        total value and the list of actions in the combination.
+
     """
-    calculated_actions = []
-    
-    # Calculate the expected value after two years for each action
-    for action_number, action in enumerate(actions, start=1):
-        calculated_actions.append(
-            (action_number, action[0], (action[0] + (action[0] * (action[1] / 100))))
-        )
-    # Sort actions by expected value in descending order
-    calculated_actions.sort(key=lambda x: x[2], reverse=True)
+    actions_objects = [
+        Action(index, cost, value_percentage)
+        for index, (cost, value_percentage) in enumerate(actions_data, start=1)
+    ]
 
-    best_combination = []
-    invested_amount = 0
-    value_of_portfolio_two_years = 0
+    best_combinations = []
+    best_value = 0
 
-    # Select actions that fit within the budget and maximize the portfolio value
-    for action_number, action_cost, action_two_years in calculated_actions:
-        if action_cost <= max_budget:
-            best_combination.append(action_number)
-            invested_amount += action_cost
-            max_budget -= action_cost
-            value_of_portfolio_two_years += action_two_years
+    # Iterate over all possible combinations of actions
+    for i in range(1, len(actions_objects) + 1):
+        for combination in combinations(actions_objects, i):
+            # Check if the sum of the costs of the actions in the combination
+            # is less than or equal to the maximum budget
+            total_cost = sum([action.cost for action in combination])
+            if total_cost <= max_budget:
+                total_value = sum(
+                    [action.expected_value_two_years for action in combination]
+                )
+                # Check if the total value is greater than or equal to the best
+                # value found so far
+                if total_value > best_value:
+                    best_combinations = [combination]
+                    best_value = total_value
+                elif total_value == best_value:
+                    best_combinations.append(combination)
 
-    return  int(invested_amount), int(value_of_portfolio_two_years), best_combination
+    return best_combinations
 
 
-invested_amount, value_of_portfolio_two_years, best_combination = brute_force(actions, max_budget)
+best_combinations = calculate_best_actions(actions_data, max_budget)
 
-print(f"Invested amount : {int(invested_amount)} euros")
-print(f"Value of the portfolio after two years : {int(value_of_portfolio_two_years)} euros")
-print(f"Best actions to buy : {best_combination}")
+print("\nVoici les actions à acheter pour avoir le meilleur rendement: \n")
+for i, combination in enumerate(best_combinations):
+    print(f"Combination {i + 1}:")
+    for action in combination:
+        print(action)
+    print(f"Coût initial : {sum([action.cost for action in combination])}")
+    print(f"Bénéfices : "
+          f"{sum([action.expected_value_two_years for action in combination])}")
+    print("----")
