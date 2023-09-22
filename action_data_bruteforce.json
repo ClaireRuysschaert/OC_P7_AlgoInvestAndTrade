@@ -1,0 +1,22 @@
+{
+    "Action-1": {"Coût par action (en euros)": 20, "Bénéfice (après 2 ans)": 5},
+    "Action-2": {"Coût par action (en euros)": 30, "Bénéfice (après 2 ans)": 10},
+    "Action-3": {"Coût par action (en euros)": 50, "Bénéfice (après 2 ans)": 15},
+    "Action-4": {"Coût par action (en euros)": 70, "Bénéfice (après 2 ans)": 20},
+    "Action-5": {"Coût par action (en euros)": 60, "Bénéfice (après 2 ans)": 17},
+    "Action-6": {"Coût par action (en euros)": 80, "Bénéfice (après 2 ans)": 25},
+    "Action-7": {"Coût par action (en euros)": 22, "Bénéfice (après 2 ans)": 7},
+    "Action-8": {"Coût par action (en euros)": 26, "Bénéfice (après 2 ans)": 11},
+    "Action-9": {"Coût par action (en euros)": 48, "Bénéfice (après 2 ans)": 13},
+    "Action-10": {"Coût par action (en euros)": 34, "Bénéfice (après 2 ans)": 27},
+    "Action-11": {"Coût par action (en euros)": 42, "Bénéfice (après 2 ans)": 17},
+    "Action-12": {"Coût par action (en euros)": 110, "Bénéfice (après 2 ans)": 9},
+    "Action-13": {"Coût par action (en euros)": 38, "Bénéfice (après 2 ans)": 23},
+    "Action-14": {"Coût par action (en euros)": 14, "Bénéfice (après 2 ans)": 1},
+    "Action-15": {"Coût par action (en euros)": 18, "Bénéfice (après 2 ans)": 3},
+    "Action-16": {"Coût par action (en euros)": 8, "Bénéfice (après 2 ans)": 8},
+    "Action-17": {"Coût par action (en euros)": 4, "Bénéfice (après 2 ans)": 12},
+    "Action-18": {"Coût par action (en euros)": 10, "Bénéfice (après 2 ans)": 14},
+    "Action-19": {"Coût par action (en euros)": 24, "Bénéfice (après 2 ans)": 21},
+    "Action-20": {"Coût par action (en euros)": 114, "Bénéfice (après 2 ans)": 18}
+}
