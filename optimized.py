@@ -68,21 +68,35 @@ def calculate_best_actions(data: List[Tuple[str, float, float]], max_budget: int
     # Sort actions by profit
     actions_objects.sort(key=lambda x: x.profit, reverse=True)
     
-    best_combination = []
+    selected_actions = []
     invested_amount = 0
     portfolio_value_two_years = 0
     
     # Select actions that fit within the budget and maximize the portfolio value
     for action in actions_objects:
-        if action.price <= max_budget:
-            if action.price + invested_amount <= max_budget:
-                best_combination.append(action.name)
-                invested_amount += action.price
-                portfolio_value_two_years += action.expected_value_two_years 
+        if action.price <= max_budget - invested_amount:
+            # Calculate portfolio value with the current action
+            temp_actions = selected_actions + [action]
+            temp_invested_amount = invested_amount + action.price
+            temp_portfolio_value = sum(
+                [act.expected_value_two_years for act in temp_actions]
+            )
+            
+            # Check if adding the current action increases portfolio value
+            if temp_portfolio_value > portfolio_value_two_years:
+                selected_actions.append(action)
+                invested_amount = temp_invested_amount
+                portfolio_value_two_years = temp_portfolio_value
+                
+                # Remove actions that are now less profitable than the current one
+                selected_actions = [
+                    act for act in selected_actions
+                    if act.profit >= action.profit
+                ] 
     
     profit_two_years = round(portfolio_value_two_years - invested_amount, 2)
     
-    return best_combination, round(invested_amount, 2), round(portfolio_value_two_years, 2), profit_two_years
+    return selected_actions, round(invested_amount, 2), round(portfolio_value_two_years, 2), profit_two_years
     
 
 best_combination, invested_amount, portfolio_value_two_years, profit_two_years = calculate_best_actions(data_one, max_budget)
