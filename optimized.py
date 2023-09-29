@@ -69,34 +69,37 @@ def calculate_best_actions(data: List[Tuple[str, float, float]], max_budget: int
     actions_objects.sort(key=lambda x: x.profit, reverse=True)
     
     selected_actions = []
-    invested_amount = 0
-    portfolio_value_two_years = 0
+    remaining_budget = max_budget
+    portfolio_value = 0
     
     # Select actions that fit within the budget and maximize the portfolio value
     for action in actions_objects:
-        if action.price <= max_budget - invested_amount:
+        if action.price <= remaining_budget:
             # Calculate portfolio value with the current action
-            temp_actions = selected_actions + [action]
-            temp_invested_amount = invested_amount + action.price
-            temp_portfolio_value = sum(
-                [act.expected_value_two_years for act in temp_actions]
+            potential_actions = selected_actions + [action]
+            potential_budget = remaining_budget - action.price
+            potential_portfolio_value = sum(
+                [act.expected_value_two_years for act in potential_actions]
             )
             
             # Check if adding the current action increases portfolio value
-            if temp_portfolio_value > portfolio_value_two_years:
+            if potential_portfolio_value > portfolio_value:
                 selected_actions.append(action)
-                invested_amount = temp_invested_amount
-                portfolio_value_two_years = temp_portfolio_value
+                remaining_budget = potential_budget
+                portfolio_value = potential_portfolio_value
                 
                 # Remove actions that are now less profitable than the current one
-                selected_actions = [
-                    act for act in selected_actions
-                    if act.profit >= action.profit
-                ] 
+                updated_selected_actions = []
+                for act in selected_actions:
+                    if act.profit >= action.profit:
+                        updated_selected_actions.append(act)
+                selected_actions = updated_selected_actions
     
-    profit_two_years = round(portfolio_value_two_years - invested_amount, 2)
+    invested_amount = round(max_budget - potential_budget, 2)
+    portfolio_value = round(portfolio_value, 2)
+    profit_two_years = round(portfolio_value - invested_amount, 2)
     
-    return selected_actions, round(invested_amount, 2), round(portfolio_value_two_years, 2), profit_two_years
+    return selected_actions, invested_amount, portfolio_value, profit_two_years
     
 
 best_combination, invested_amount, portfolio_value_two_years, profit_two_years = calculate_best_actions(data_one, max_budget)
