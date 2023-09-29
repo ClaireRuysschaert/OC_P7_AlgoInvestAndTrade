@@ -32,8 +32,8 @@ with open(data_file, "r") as json_file:
 
 def calculate_best_actions(data: dict, max_budget: int) -> List[Tuple[Action]]:
     """
-    Calculate the best combinations of actions to maximize returns
-    within a given budget.
+    Using a brute force approach, determine the optimal combination of actions
+    to maximize returns within a specified budget. 
 
     Args:
         data (dict): Dictionary containing action data with keys as action names.
