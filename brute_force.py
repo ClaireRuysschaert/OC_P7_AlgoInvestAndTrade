@@ -1,11 +1,7 @@
-import json
-import os
 from dataclasses import dataclass, field
 from itertools import combinations
-from pathlib import Path
 from typing import List, Tuple
-
-project_path = str(Path(__file__).parent)
+from utils.load_data_bruteforce import load_data_from_json_file
 
 
 @dataclass
@@ -25,15 +21,14 @@ class Action:
 
 
 max_budget = 500
-data_file = os.path.join(project_path, "action_data_bruteforce.json")
-with open(data_file, "r") as json_file:
-    data = json.load(json_file)
+
+data = load_data_from_json_file()
 
 
 def calculate_best_actions(data: dict, max_budget: int) -> List[Tuple[Action]]:
     """
     Using a brute force approach, determine the optimal combination of actions
-    to maximize returns within a specified budget. 
+    to maximize returns within a specified budget.
 
     Args:
         data (dict): Dictionary containing action data with keys as action names.
@@ -78,16 +73,17 @@ def calculate_best_actions(data: dict, max_budget: int) -> List[Tuple[Action]]:
     return best_combinations
 
 
-best_combinations = calculate_best_actions(data, max_budget)
+if __name__ == "__main__":
+    best_combinations = calculate_best_actions(data, max_budget)
 
-print("\nVoici les actions à acheter pour avoir le meilleur rendement: \n")
-for i, combination in enumerate(best_combinations):
-    print(f"Combination {i + 1}:")
-    for action in combination:
-        print(action)
-    print(f"Coût initial : {sum([action.cost for action in combination])}")
-    print(
-        f"Bénéfices : "
-        f"{sum([action.expected_value_two_years for action in combination])}"
-    )
-    print("----")
+    print("\nVoici les actions à acheter pour avoir le meilleur rendement: \n")
+    for i, combination in enumerate(best_combinations):
+        print(f"Combination {i + 1}:")
+        for action in combination:
+            print(action)
+        print(f"Coût initial : {sum([action.cost for action in combination])}")
+        print(
+            f"Bénéfices : "
+            f"{sum([action.expected_value_two_years for action in combination])}"
+        )
+        print("----")
