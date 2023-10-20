@@ -1,3 +1,6 @@
 .venv
 test.py
 test2.py
+__pycache__
+optimized_pseudocode.py
+brute_force_pseudocode.py
