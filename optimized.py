@@ -20,19 +20,19 @@ class Action:
         return f"Action-{self.name}"
 
 
-max_budget = 500
+MAX_BUDGET = 500
 data_one, data_two = load_data_from_csv_files()
 
 
 def calculate_best_actions(
-    data: List[Tuple[str, float, float]], max_budget: int
+    data: List[List[str | float]], max_budget: int
 ) -> Tuple[str, float, float, float]:
     """
     Using an optimized approach (Knapsack), determine the optimal combination of actions
     to maximize returns within a specified budget.
 
     Args:
-        data (List[List[str, float]]): List of lists containing action data with name,
+        data (List[List[str | float]]): List of lists containing action data with name,
         action cost and profit
         max_budget (int): The maximum budget available.
 
@@ -47,13 +47,13 @@ def calculate_best_actions(
             float(price),
             float(profit),
         )
-        for name, price, profit in data
+        for name, price, profit in data if float(price) > 0
     ]
 
     # Sort actions by profit
     actions_objects.sort(key=lambda x: x.profit, reverse=True)
 
-    selected_actions = []
+    selected_actions: List[Action] = []
     remaining_budget = max_budget
     portfolio_value = 0
 
@@ -61,7 +61,7 @@ def calculate_best_actions(
     for action in actions_objects:
         if action.price <= remaining_budget:
             # Calculate portfolio value with the current action
-            potential_actions = selected_actions + [action]
+            potential_actions: List[Action] = selected_actions + [action]
             potential_budget = remaining_budget - action.price
             potential_portfolio_value = sum(
                 [act.expected_value_two_years for act in potential_actions]
@@ -72,13 +72,6 @@ def calculate_best_actions(
                 selected_actions.append(action)
                 remaining_budget = potential_budget
                 portfolio_value = potential_portfolio_value
-
-                # Remove actions that are now less profitable than the current one
-                updated_selected_actions = []
-                for act in selected_actions:
-                    if act.profit >= action.profit:
-                        updated_selected_actions.append(act)
-                selected_actions = updated_selected_actions
 
     invested_amount = round(max_budget - potential_budget, 2)
     portfolio_value = round(portfolio_value, 2)
@@ -93,13 +86,14 @@ if __name__ == "__main__":
         invested_amount,
         portfolio_value_two_years,
         profit_two_years,
-    ) = calculate_best_actions(data_one, max_budget)
+    ) = calculate_best_actions(data_one, MAX_BUDGET)
     print("----")
     print("Dataset 1")
     print("----")
     print(f"Voici les {len(best_combination)} noms des actions à")
-    ("acheter pour avoir le meilleur rendement: \n")
-    print(best_combination)
+    print("acheter pour avoir le meilleur rendement: \n")
+    for action in best_combination:
+        print(action)
     print(f"Coût initial : {invested_amount} euros")
     print(f"Valeur du portefeuille après 2 ans : {portfolio_value_two_years} euros")
     print(f"Bénéfices : {profit_two_years} euros")
@@ -110,13 +104,14 @@ if __name__ == "__main__":
         invested_amount,
         portfolio_value_two_years,
         profit_two_years,
-    ) = calculate_best_actions(data_two, max_budget)
+    ) = calculate_best_actions(data_two, MAX_BUDGET)
     print("----")
     print("Dataset 2")
     print("----")
     print(f"Voici les {len(best_combination)} noms des actions à acheter")
     print("pour avoir le meilleur rendement: \n")
-    print(best_combination)
+    for action in best_combination:
+        print(action)
     print(f"Coût initial : {invested_amount} euros")
     print("Valeur du portefeuille après 2 ans : ")
     print(f"{portfolio_value_two_years} euros")
