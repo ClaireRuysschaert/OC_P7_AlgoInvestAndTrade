@@ -20,7 +20,7 @@ class Action:
         return f"Action-{self.index}"
 
 
-max_budget = 500
+MAX_BUDGET = 500
 
 data = load_data_from_json_file()
 
@@ -74,11 +74,11 @@ def calculate_best_actions(data: dict, max_budget: int) -> List[Tuple[Action]]:
 
 
 if __name__ == "__main__":
-    best_combinations = calculate_best_actions(data, max_budget)
+    best_combinations = calculate_best_actions(data, MAX_BUDGET)
 
     print("\nVoici les actions à acheter pour avoir le meilleur rendement: \n")
-    for i, combination in enumerate(best_combinations):
-        print(f"Combination {i + 1}:")
+    for i, combination in enumerate(best_combinations, start=1):
+        print(f"Combination {i}:")
         for action in combination:
             print(action)
         print(f"Coût initial : {sum([action.cost for action in combination])}")
